@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
+	id="com.nplaceit.cordovaplugins.wifiworker" version="0.0.2">
+
+	<name>WifiWorker</name>
+	<description>Manager wifi hotspots and connections</description>
+	<license>Apache 2.0</license>
+	<author>nPlaceIT contato@nplaceit.com</author>
+	<keywords>cordova,phonegap,wifi,network</keywords>
+
+	<asset src="www/WifiWorker.js" target="WifiWorker.js" />
+	
+	<js-module src="www/WifiWorker.js" name="WifiWorker">
+		<clobbers target="WifiWorker" />
+	</js-module>
+
+	<platform name="android">
+		
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+			<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+			<uses-permission android:name="android.permission.GET_TASKS" />
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<receiver android:name="com.nplaceit.cordovaplugins.wifiworker.WifiBroadcastReceiver" android:exported="true" >
+            	<intent-filter>
+                	<action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                	<action android:name="android.net.wifi.supplicant.STATE_CHANGE" />
+                	<action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE" />
+                	<action android:name="android.net.wifi.SCAN_RESULTS" />
+            	</intent-filter>
+        	</receiver>
+
+		<service
+            android:name="com.nplaceit.cordovaplugins.wifiworker.WifiService"
+            android:process="com.nplaceit.cordovaplugins.wifiworker.service"
+            android:exported="false"/>
+		</config-file>
+		
+		<config-file target="res/xml/config.xml" parent="/*">	
+			<feature name="WifiWorker">
+				<param name="android-package" value="com.nplaceit.cordovaplugins.wifiworker.WifiWorker" />
+				<param name="onload" value="true" />
+			</feature>
+		</config-file>
+		
+		<source-file src="src/android/src/com/nplaceit/cordovaplugins/wifiworker/WifiController.java" target-dir="src/com/nplaceit/cordovaplugins/wifiworker" />	
+		<source-file src="src/android/src/com/nplaceit/cordovaplugins/wifiworker/WifiWorker.java" target-dir="src/com/nplaceit/cordovaplugins/wifiworker" />	
+		<source-file src="src/android/src/com/nplaceit/cordovaplugins/wifiworker/WifiBroadcastReceiver.java" target-dir="src/com/nplaceit/cordovaplugins/wifiworker" />
+		<source-file src="src/android/src/com/nplaceit/cordovaplugins/wifiworker/WifiService.java" target-dir="src/com/nplaceit/cordovaplugins/wifiworker" />
+		<source-file src="src/android/src/com/nplaceit/cordovaplugins/wifiworker/Dao.java" target-dir="src/com/nplaceit/cordovaplugins/wifiworker" />	
+	</platform>
+
+	<platform name="ios">
+		<config-file target="config.xml" parent="/*">
+			<feature name="WifiWorker">
+				<param name="ios-package" value="WifiWorker"/>
+			</feature>
+		</config-file>
+
+		<header-file src="src/ios/WifiWorker.h" />
+		<source-file src="src/ios/WifiWorker.m" />
+		<framework src="SystemConfiguration.framework" weak="true" />
+	</platform>
+
+
+
+</plugin>
